@@ -1,0 +1,9 @@
+extends layout/main
+
+block variables
+    - var pageTitle = (username) ? `Привет ${username}` : 'Привет ≥︺‿︺≤'
+
+block content
+    p(class='lead') Всем привет!
+
+block scripts

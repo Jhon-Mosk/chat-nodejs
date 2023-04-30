@@ -1,0 +1,12 @@
+extends layout/main
+
+block variables
+    - var pageTitle = error.message
+
+block content
+    h1= error.message
+    h2= error.status
+    pre= error.stack
+
+block scripts
+

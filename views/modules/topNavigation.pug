@@ -1,0 +1,23 @@
+nav.navbar.navbar-expand-lg(style="background-color: #0a1929")
+    .container-fluid        
+        button.navbar-toggler(type='button' data-bs-toggle='collapse' data-bs-target='#navbarNav' aria-controls='navbarNav' aria-expanded='false' aria-label='Toggle navigation')
+            span.navbar-toggler-icon
+        #navbarNav.collapse.navbar-collapse
+            ul.navbar-nav
+                li.nav-item
+                    a.nav-link.link-primary(href='/') Главная
+                if user
+                    li.nav-item
+                        a.nav-link.link-primary(href='/chat') Чат
+        ul.nav.navbar-nav.navbar-right
+            if user
+                li.nav-item
+                    a.nav-link.link-primary(href='/logout' onclick="let form = document.createElement('form');\
+form.action = 'logout';\
+form.method = 'POST';\
+document.body.append(form);\
+form.submit();\
+return false;") Выйти
+            else
+                li.nav-item
+                    a.nav-link.link-primary(href='/login') Войти

@@ -1,0 +1,20 @@
+{
+    "port": 3000,
+    "mongoose": {
+        "uri": "mongodb://127.0.0.1:27017/chat"
+    },
+    "session": {
+        "secret": "KillerIsJim",
+        "resave": false,
+        "saveUninitialized": false,
+        "key": "sid",
+        "name": "sid",
+        "cookie": {
+            "secure": false,
+            "httpOnly": true,
+            "domain": "localhost",
+            "path": "/",
+            "maxAge": null
+        }
+    }
+}

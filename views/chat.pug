@@ -1,0 +1,97 @@
+extends layout/main
+
+block variables
+    - var pageTitle = 'Чат'
+
+block headScripts
+    script(src='/vendor/socket.io.min.js')
+
+block content
+    #room
+        form.mb-3
+            input(disabled class="form-control" autocomplete="off" autofocus placeholder="Сообщение...")
+        ul.list-group
+
+block scripts
+    script.
+        const socket = io.connect("ws://localhost:3000", {
+            reconnect: false
+        });
+
+        let form = document.querySelector('#room form');
+        let ul = document.querySelector('#room ul');
+        let input = document.querySelector('#room form input');
+
+        socket
+            .on('message', function(username, message) {
+                printMessage(username + "> " + message);
+            })
+            .on('leave', function(username) {
+                printStatus(username + " вышел из чата");
+            })
+            .on('join', function(username) {
+                printStatus(username + " вошёл в чат");
+            })
+            .on('connect', function() {
+                printStatus("соединение установлено");
+
+                form.addEventListener("submit", () => {
+                    event.preventDefault();
+                    sendMessage()
+                });
+
+                input.disabled = false;
+            })
+            .on('disconnect', function() {
+                printStatus("соединение потеряно");
+
+                form.removeEventListener('submit', sendMessage);
+                
+                input.disabled = true;
+
+                let event = new Event('error');
+                document.dispatchEvent(event);
+            })
+            .on('logout', function() {
+                location.href = "/";
+            })
+            .on('error', function(reason) {
+                if (reason == "handshake unauthorized") {
+                    printStatus("вы вышли из сайта");
+                } else {
+                    setTimeout(function() {
+                        socket.socket.connect();
+                    }, 500);
+                }
+            });
+
+        function sendMessage() {
+            let input = document.querySelector("input");
+            let text = input.value;
+
+            socket.emit('message', text, function() {
+                printMessage("я> " + text);
+            });
+
+            input.value = "";
+
+            return false;
+        }
+
+        function printStatus(status) {
+            let li = document.createElement("li");
+            li.className = "list-group-item";
+            li.classList.add("list-group-item-dark");
+            let i = document.createElement("i");
+            i.innerText = status;
+            li.append(i);
+            ul.append(li);
+        }
+
+        function printMessage(text) {
+            let li = document.createElement("li");
+            li.className = "list-group-item";
+            li.classList.add("list-group-item-dark");
+            li.innerText = text;
+            ul.append(li);
+        }
